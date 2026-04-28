@@ -20,14 +20,14 @@ DESCRIPTION
     of live traffic (recommended for testing / demonstration).
 
 MODELS
-    rf          Random Forest          Accuracy: Best.    Load: ~2 s.
+    rf          Random Forest          Accuracy: Best.
                 Ensemble of 100+ trees trained on UNSW-NB15.
                 Recommended for all production use cases.
 
-    dt          Decision Tree          Accuracy: Good.    Load: Instant.
+    dt          Decision Tree          Accuracy: Good.
                 Single tree -- fast and interpretable.
 
-    ensemble    RF + DT (weighted)     Accuracy: Best.    Load: ~2 s.
+    ensemble    RF + DT (weighted)     Accuracy: Best.
                 Averages RF (70%) + DT (30%).  Most robust against
                 individual model bias.
 
@@ -203,7 +203,7 @@ except ImportError:
 # CONSTANTS
 # ══════════════════════════════════════════════════════════════════════════════
 
-SCRIPT_DIR   = Path(__file__).parent
+SCRIPT_DIR   = Path(__file__).parent.parent
 DATASET_PATH = SCRIPT_DIR / "Datasets" / "UNSW_NB15_testing-set.csv"
 
 # Available models — skipping rf_ids_model_with_feature_selection.joblib (186 MB,
@@ -213,7 +213,6 @@ MODELS = {
         "name":     "Random Forest",
         "file":     "random_forest_ids_model.joblib",
         "emoji":    "🌲",
-        "speed":    "~2 s load",
         "stars":    "★★★★★",
         "desc":     "Best accuracy — recommended for production scans",
         "color":    "green",
@@ -222,7 +221,6 @@ MODELS = {
         "name":     "Decision Tree",
         "file":     "decision_tree_ids_model.joblib",
         "emoji":    "🌿",
-        "speed":    "Instant",
         "stars":    "★★★★☆",
         "desc":     "Fast & interpretable — great for quick checks",
         "color":    "cyan",
@@ -231,7 +229,6 @@ MODELS = {
         "name":     "Ensemble  (RF + DT)",
         "file":     None,           # uses rf + dt internally
         "emoji":    "🧠",
-        "speed":    "~2 s load",
         "stars":    "★★★★★",
         "desc":     "Averages RF & DT probabilities — most robust",
         "color":    "yellow",
@@ -297,7 +294,7 @@ MED_IMP = {
 
 def _load_one(key: str):
     """Load a single sklearn Pipeline from disk."""
-    path = SCRIPT_DIR / MODELS[key]["file"]
+    path = SCRIPT_DIR / "models" / MODELS[key]["file"]
     return joblib.load(path)
 
 
@@ -595,12 +592,11 @@ def show_model_menu() -> str:
     t.add_column("#",     style="dim",      width=3)
     t.add_column("Key",   style="bold cyan", width=10)
     t.add_column("Model", style="white",     width=22)
-    t.add_column("Speed", style="dim",       width=12)
 
     keys = list(MODELS.keys())
     for i, k in enumerate(keys, 1):
         m = MODELS[k]
-        t.add_row(str(i), k, m['name'], m['speed'])
+        t.add_row(str(i), k, m['name'])
 
     console.print(t)
     console.print()
